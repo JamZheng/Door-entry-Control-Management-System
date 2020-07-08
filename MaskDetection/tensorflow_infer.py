@@ -2,15 +2,16 @@
 import warnings
 warnings.filterwarnings('ignore')#过滤警告
 
+import os
 import cv2
 import time
 import datetime
 import argparse
 from file import create_file #creat the file
-
+from ctypes import *
 import numpy as np
 from PIL import Image
-from keras.models import model_from_json
+#from keras.models import model_from_json
 from utils.anchor_generator import generate_anchors
 from utils.anchor_decode import decode_bbox
 from utils.nms import single_class_non_max_suppression
@@ -165,6 +166,27 @@ def inference(image,
         Image.fromarray(image).show()
     return output_info
 
+def matching(i,the_path):
+    i = i-1
+    print("00")
+    dllpath = os.getcwd();
+    dllpath = dllpath.replace('\\','/')
+    print(dllpath)
+    facedll = CDLL(os.getcwd() + "/face.dll")
+    print("11")
+    img = c_char_p(bytes(str(the_path) + '/' + 'demo' + str(i) + '.jpg', 'utf-8'))
+    flagmatch = 0
+    for root, dirs, files in os.walk("./facelib/"):
+        for file in files:
+            print("./facelib/" + file)
+            img0 = c_char_p(bytes("./facelib/" + file, 'utf-8'))
+            if facedll.img_matching(img, img0):
+                flagmatch = 1
+                break
+    if flagmatch == 1:
+        print("\n验证成功！")
+    else:
+        print("\n验证失败，请调整角度，摘下口罩，重新识别")
 
 def run_on_video(video_path, output_video_name, conf_thresh):
     cap = cv2.VideoCapture(video_path,cv2.CAP_DSHOW)
@@ -191,6 +213,7 @@ def run_on_video(video_path, output_video_name, conf_thresh):
                       draw_result=True,
                       show_result=False)
             cv2.imshow('image', img_raw[:, :, ::-1])
+
             k = cv2.waitKey(10)
             inference_stamp = time.time()
             # writer.write(img_raw)
@@ -224,7 +247,9 @@ def run_on_video(video_path, output_video_name, conf_thresh):
                 if flag == -1:
                     f.write( '时间：  ' + time_now + '    识别结果： 未识别到人像' + '\n')
                     print("未识别到人像")
-                f.close
+
+                matching(i,the_path)
+                #匹配
             if k ==ord('o'):
                 print("over")
                 cap.release()

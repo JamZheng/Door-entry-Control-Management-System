@@ -1,6 +1,6 @@
 import datetime
 import os
-
+from ctypes import *  
 
 def get_time():
     now_time = datetime.datetime.now()
@@ -28,7 +28,3 @@ def create_file():
     the_path = the_path.replace('\\','/')
     mkdir(the_path)
     return the_time,the_path
-
-if __name__ == "__main__":
-    print(create_file())
-    print(os.getcwd())
