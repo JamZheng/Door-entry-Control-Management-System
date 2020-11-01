@@ -20,7 +20,7 @@ from load_model.tensorflow_loader import load_tf_model, tf_inference
 import helmet_graph as hg
 
     
-sess, graph = load_tf_model('models/face_mask_detection.pb')
+sess, graph = load_tf_model('models/face_mask_detection1.pb')
 # anchor configuration
 feature_map_sizes = [[33, 33], [17, 17], [9, 9], [5, 5], [3, 3]]
 anchor_sizes = [[0.04, 0.056], [0.08, 0.11], [0.16, 0.22], [0.32, 0.45], [0.64, 0.72]]
