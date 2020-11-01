@@ -1,3 +1,7 @@
+'''
+test the dll
+'''
+
 from ctypes import *  
 dll = CDLL("./face.dll")
 img1 = c_char_p(bytes("./facelib/t.jpg", 'utf-8'))
